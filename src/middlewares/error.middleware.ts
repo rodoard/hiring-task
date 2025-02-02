@@ -1,6 +1,8 @@
-import { ArgumentValidationError, CustomError } from "../errors";
-import { Logger } from "../utils";
-import { NextFunction, Request, Response } from "express";
+import { Request, Response, NextFunction } from 'express';
+import { CustomError } from '../errors/custom.error';
+import { ArgumentValidationError } from '../errors/argumentValidation.error';
+import { Logger } from '../utils/logger';
+import httpStatus from 'http-status';
 
 export const errorHandlerMiddleware = (
   error: unknown,
@@ -8,19 +10,25 @@ export const errorHandlerMiddleware = (
   res: Response,
   _next: NextFunction
 ) => {
+  if (error instanceof Error) {
   Logger.error(JSON.stringify(error));
-
+  }
+  
   if (error instanceof CustomError) {
     if(error instanceof ArgumentValidationError) {
-      res.status(error.errorCode).json({
+      return res.status(error.errorCode).json({
         message: error.message,
         messages: error.messages
-      })
+      });
     }
-    else res.status(error.errorCode).json({
+    return res.status(error.errorCode).json({
       message: error.message,
     });
   }
 
-  return;
+  // Handle generic errors
+  const errorMessage = error instanceof Error ? error.message : 'An unexpected error occurred';
+  return res.status(httpStatus.INTERNAL_SERVER_ERROR).json({
+    message: errorMessage,
+  });
 };
