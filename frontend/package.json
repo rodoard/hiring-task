@@ -3,8 +3,9 @@
   "version": "1.0.0",
   "description": "Frontend for hiring task application",
   "scripts": {
-    "start": "parcel src/index.html --log-level verbose",
-    "build": "parcel build src/index.html",
+    "generate-config": "node scripts/generate-config.js",
+    "start": "npm run generate-config && parcel src/index.html --log-level verbose",
+    "build": "npm run generate-config && parcel build src/index.html",
     "test": "jest",
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage"
@@ -16,6 +17,7 @@
     "axios": "^1.7.9",
     "crypto-js": "^4.2.0",
     "dayjs": "^1.11.13",
+    "dotenv": "^16.4.5",
     "mobx": "^6.13.6",
     "mobx-react-lite": "^4.1.0",
     "moment": "^2.30.1",

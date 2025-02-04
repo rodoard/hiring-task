@@ -1,9 +1,6 @@
-import dotenv from 'dotenv';
+import config from "../config";
 
-// Load environment variables from .env file
-dotenv.config();
-
-const BASE_API_URL = process.env.HIRING_TASK_APP_API_URL || 'http://localhost:3000/api';
+const BASE_API_URL = config.api.baseUrl;
 
 /**
  * Generates a full API URL for a given path
