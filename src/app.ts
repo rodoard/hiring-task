@@ -10,7 +10,7 @@ app.use(express.json());
 
 // Only use clientUse in non-test environments
 // jest complains about detecting openhandles otherwise
-if (process.env.NODE_ENV !== 'test') {
+if (process.env.NODE_ENV !== 'test' && process.env.NODE_ENV !== 'development') {
   app.use(clientUse());
   app.use(routeMiddleware);
 }

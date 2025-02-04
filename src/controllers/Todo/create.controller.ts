@@ -16,7 +16,8 @@ export const create = async (req: Request, res: Response, next: NextFunction) =>
     const todoData: Partial<TodoEntity> = {
       title: req.body.title,
       description: req.body.description,
-      isCompleted: req.body.isCompleted || false
+      isCompleted: req.body.isCompleted || false,
+      dueDate: req.body.dueDate ? new Date(req.body.dueDate) : undefined
     };
 
     const todo = await todoService.addTodo(todoData);

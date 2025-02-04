@@ -35,3 +35,5 @@ yarn-error.log*
 Thumbs.db
 
 node_modules
+frontend/src/config/index.ts
+db/development.sqlite

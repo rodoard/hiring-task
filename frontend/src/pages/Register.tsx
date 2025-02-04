@@ -43,14 +43,19 @@ const Register: React.FC = observer(() => {
       display: 'flex', 
       justifyContent: 'center', 
       alignItems: 'center',
-      marginTop: '64px',
+      minHeight: '100vh',
       backgroundColor: themeStore.isDarkMode ? '#141414' : '#f0f2f5',
+      backgroundImage: !themeStore.isDarkMode 
+        ? 'linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%)' 
+        : 'none',
+      padding: '20px',
     }}>
       <Card 
         title="Create an Account" 
         style={{ 
           width: 300, 
-          boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
+          boxShadow: '0 8px 16px rgba(0, 0, 0, 0.1)',
+          borderRadius: '12px',
           backgroundColor: themeStore.isDarkMode ? '#1f1f1f' : '#ffffff',
           color: themeStore.isDarkMode ? '#ffffff' : '#000000'
         }}

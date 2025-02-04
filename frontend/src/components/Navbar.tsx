@@ -37,20 +37,19 @@ const Navbar: React.FC = observer(() => {
       display: 'flex', 
       alignItems: 'center', 
       justifyContent: 'space-between',
-      padding: '0 24px' 
+      padding: '0 24px',
+      backgroundColor: themeStore.isDarkMode ? '#001529' : '#f5f5f5',
+      boxShadow: themeStore.isDarkMode ? 'none' : '0 2px 8px rgba(0, 0, 0, 0.1)'
     }}>
       <div 
         style={{ 
           display: 'flex',
           alignItems: 'center',
-          color: themeStore.isDarkMode ? 'white' : 'black', 
           fontSize: '18px', 
           fontWeight: 'bold', 
           cursor: 'pointer',
           transition: 'color 0.3s'
         }}
-        onMouseEnter={(e) => e.currentTarget.style.color = '#1890ff'}
-        onMouseLeave={(e) => e.currentTarget.style.color = themeStore.isDarkMode ? 'white' : 'black'}
       >
         <Link 
           to="/" 
@@ -75,21 +74,35 @@ const Navbar: React.FC = observer(() => {
         theme={themeStore.isDarkMode ? "dark" : "light"} 
         mode="horizontal" 
         selectedKeys={[location.pathname]}
-        style={{ flex: 1, justifyContent: 'flex-end' }}
+        style={{ 
+          flex: 1, 
+          justifyContent: 'flex-end',
+          backgroundColor: 'transparent'
+        }}
       >
         {!authStore.isAuthenticated && (
           <>
-            <Menu.Item key="/login" icon={<LoginOutlined />}>
+            <Menu.Item 
+              key="/login" 
+              icon={<LoginOutlined />}
+            >
               <Link to="/login">Login</Link>
             </Menu.Item>
-            <Menu.Item key="/register" icon={<UserAddOutlined />}>
+            <Menu.Item 
+              key="/register" 
+              icon={<UserAddOutlined />}
+            >
               <Link to="/register">Register</Link>
             </Menu.Item>
           </>
         )}
         {authStore.isAuthenticated && (
           <>
-            <Menu.Item key="/logout" icon={<LogoutOutlined />} onClick={handleLogout}>
+            <Menu.Item 
+              key="/logout" 
+              icon={<LogoutOutlined />} 
+              onClick={handleLogout}
+            >
               Logout
             </Menu.Item>
           </>

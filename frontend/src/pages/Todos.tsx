@@ -13,7 +13,6 @@ const { Content, Sider } = Layout;
 const TodosPage = observer(() => {
   const [todos, setTodos] = useState<Todo[]>([]);
   const [originalTodos, setOriginalTodos] = useState<Todo[]>([]);
-  const [sortOrder, setSortOrder] = useState<SortOrder>('asc');
   const { todoId } = useParams<{ todoId?: string }>();
 
   useEffect(() => {
@@ -56,16 +55,15 @@ const TodosPage = observer(() => {
         <Sidebar
           todos={todos}
           onSelectTodo={() => {}} // Placeholder to maintain prop interface
-          onSort={(sortBy: string) => {
-            // Toggle sort order after each sort
-            const newSortOrder: SortOrder = sortOrder === 'asc' ? 'desc' : 'asc';
-            setSortOrder(newSortOrder);
+          onSort={(sortSpec: string) => {
+            const [sortBy, sortOrder] = sortSpec.split(':');
             
             // Use the sortTodos utility
-            const sortedTodos = sortTodos(todos, sortBy, newSortOrder);
+            const sortedTodos = sortTodos(todos, sortBy, sortOrder as SortOrder);
             setTodos(sortedTodos);
           }}
           onFilter={(filterText: string, filterBy: string) => {
+            console.log('Filter called with:', { filterText, filterBy });
             // If no filter text, reset to original todos
             if (!filterText) {
               setTodos(originalTodos);
@@ -74,6 +72,7 @@ const TodosPage = observer(() => {
 
             // Use the filterTodos utility
             const filteredTodos = filterTodos(originalTodos, filterText, filterBy);
+            console.log('Filtered todos:', filteredTodos);
             setTodos(filteredTodos);
           }}
         />
