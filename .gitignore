@@ -1,6 +1,37 @@
-node_modules
-.env
+# Environment files
+.env*
+!.env.example
+
+.parcel-cache
 
 # Test database
 tests/*.sqlite
 tests/**/*.sqlite
+
+# Build outputs
+dist/
+build/
+coverage/
+
+# Dependency locks
+package-lock.json
+yarn.lock
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Editor directories and files
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+node_modules

@@ -1,0 +1,17 @@
+/* Dark mode dropdown styles */
+.dark-select-dropdown {
+  background-color: #1f1f1f !important;
+}
+
+.dark-select-dropdown .ant-select-item {
+  color: rgba(255, 255, 255, 0.85) !important;
+  background-color: #1f1f1f !important;
+}
+
+.dark-select-dropdown .ant-select-item-option-selected:not(.ant-select-item-option-disabled) {
+  background-color: #262626 !important;
+}
+
+.dark-select-dropdown .ant-select-item-option:hover {
+  background-color: #262626 !important;
+}

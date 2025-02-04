@@ -3,15 +3,16 @@ import { CustomError } from '../errors/custom.error';
 import { ArgumentValidationError } from '../errors/argumentValidation.error';
 import { Logger } from '../utils/logger';
 import httpStatus from 'http-status';
+import { Env } from '../env';
 
 export const errorHandlerMiddleware = (
   error: unknown,
   _req: Request,
   res: Response,
   _next: NextFunction
-) => {
-  if (error instanceof Error) {
-  Logger.error(JSON.stringify(error));
+) => { 
+  if (Env.nodeEnv !== 'test') {
+    Logger.error(JSON.stringify(error));
   }
   
   if (error instanceof CustomError) {

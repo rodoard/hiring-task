@@ -12,9 +12,9 @@ app.use(express.json());
 // jest complains about detecting openhandles otherwise
 if (process.env.NODE_ENV !== 'test') {
   app.use(clientUse());
+  app.use(routeMiddleware);
 }
 
-//app.use(routeMiddleware);
 app.use("/health", (_req, res) => {
   res.json({ msg: "Hello Get Zell" });
 });

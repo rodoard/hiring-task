@@ -1,5 +1,5 @@
 import request from 'supertest';
-import { AppDataSource } from '../../db';
+import { AppDataSource, dbCreate } from '../../db';
 import { UserEntity } from '../../entities';
 import { encryptPassword } from '../../utils/encrypt';
 import app from '../../app';
@@ -8,11 +8,20 @@ import * as userServiceModule from '../../services/user.service';
 describe('/api/v1', () => {
   describe('/auth/login', () => {
     beforeAll(async () => {
+      // Ensure database is fully initialized
+      if (AppDataSource.isInitialized) {
+        await AppDataSource.destroy();
+      }
       await AppDataSource.initialize();
+      await AppDataSource.synchronize(true); // Force schema sync
+      await dbCreate();
     });
 
     afterAll(async () => {
-      await AppDataSource.destroy();
+      // Clean up the data source after tests
+      if (AppDataSource.isInitialized) {
+        await AppDataSource.destroy();
+      }
     });
 
     beforeEach(async () => {
@@ -76,9 +85,9 @@ describe('/api/v1', () => {
         expect(response.body).toEqual({ message: 'Invalid email or password' });
       });
 
-      // Test case to cover deleted user scenario
       it('should return 401 for deleted user', async () => {
-        const hashedPassword = await encryptPassword('password123');
+        const plainTextPassword = 'password123';
+        const hashedPassword = await encryptPassword(plainTextPassword);
 
         // Create a test user with a deletion timestamp
         const userRepository = AppDataSource.getRepository(UserEntity);
@@ -92,7 +101,7 @@ describe('/api/v1', () => {
         // Call the login endpoint
         const response = await request(app)
           .post('/api/v1/auth/login')
-          .send({ email: 'deleted@example.com', password: 'password123' });
+          .send({ email: 'deleted@example.com', password: plainTextPassword });
 
         // Validate the response
         expect(response.status).toBe(401);

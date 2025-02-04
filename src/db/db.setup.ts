@@ -11,8 +11,15 @@ export const AppDataSource = new DataSource({
   password: Env.password,
   port: Env.dbPort,
   logging: false,
-  synchronize: false,
+  synchronize: Env.nodeEnv === 'test', // Enable synchronize only for test env
   entities: [UserEntity, TodoEntity],
   entitySkipConstructor: true,
+  ...(Env.dbType === 'sqlite' ? { 
+    // Enable foreign key support for SQLite
+    extra: { 
+      // Enable foreign key constraints
+      enableForeignKeys: true 
+    }
+  } : {}),
   ...(Env.dbType !== 'sqlite' ? { namingStrategy: new SnakeNamingStrategy() } : {}),
 });

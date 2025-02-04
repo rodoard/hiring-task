@@ -1,11 +1,17 @@
 import { Request, Response, NextFunction } from 'express';
 import { TodoService } from '../../services/todo.service';
 import { TodoEntity } from '../../entities';
+import { getUserUuid } from '../../utils/request-user';
 import httpStatus from 'http-status';
 
 export const update = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const userUuid = req.user.uuid;
+    const userUuid = getUserUuid(req);
+    
+    if (!userUuid) {
+      return res.status(401).json({ message: 'Unauthorized' });
+    }
+
     const { uuid } = req.params;
 
     const todoService = new TodoService(userUuid);

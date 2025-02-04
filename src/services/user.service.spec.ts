@@ -8,15 +8,21 @@ describe('UserService', () => {
   let userRepository: Repository<UserEntity>;
   
   beforeAll(async () => {
-    // Initialize the data source before tests
+    // Ensure database is fully initialized
+    if (dataSource.isInitialized) {
+      await dataSource.destroy();
+    }
     await dataSource.initialize();
+    await dataSource.synchronize(true); // Force schema sync
     await dbCreate();
     userRepository = dataSource.getRepository(UserEntity);
   });
 
   afterAll(async () => {
     // Clean up the data source after tests
-    await dataSource.destroy();
+    if (dataSource.isInitialized) {
+      await dataSource.destroy();
+    }
   });
 
   beforeEach(async () => {

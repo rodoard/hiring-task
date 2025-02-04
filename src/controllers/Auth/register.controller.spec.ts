@@ -9,12 +9,20 @@ import { CustomError } from '../../errors/custom.error';
 describe('/api/v1', () => {
   describe('/auth/register', () => {
     beforeAll(async () => {
-      await dbCreate()
+      // Ensure database is fully initialized
+      if (AppDataSource.isInitialized) {
+        await AppDataSource.destroy();
+      }
       await AppDataSource.initialize();
+      await AppDataSource.synchronize(true); // Force schema sync
+      await dbCreate();
     });
 
     afterAll(async () => {
-      await AppDataSource.destroy();
+      // Clean up the data source after tests
+      if (AppDataSource.isInitialized) {
+        await AppDataSource.destroy();
+      }
     });
 
     beforeEach(async () => {
@@ -89,7 +97,7 @@ describe('/api/v1', () => {
 
         expect(response.status).toBe(httpStatus.BAD_REQUEST);
         expect(response.body.message).toBe('Arguments are invalid.');
-        expect(response.body.messages).toContain('Name is required.');
+        expect(response.body.messages).toContain('Username is required.');
       });
 
       it('should handle registration with missing email', async () => {

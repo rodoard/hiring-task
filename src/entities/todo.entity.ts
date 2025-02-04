@@ -1,4 +1,4 @@
-import { Column, Entity, PrimaryGeneratedColumn, ManyToOne } from "typeorm";
+import { Column, Entity, PrimaryGeneratedColumn, ManyToOne, JoinColumn } from "typeorm";
 import { CoreEntity } from "./core.entity";
 import { UserEntity } from "./user.entity";
 
@@ -15,13 +15,19 @@ export class TodoEntity extends CoreEntity {
 
   @Column({ 
     type: "boolean", 
-    default: false 
+    default: false,
+    name: "is_completed"
   })
   isCompleted;
 
-  @Column({ type: "datetime", nullable: true })
+  @Column({ 
+    type: "datetime", 
+    nullable: true,
+    name: "due_date"
+  })
   dueDate;
 
   @ManyToOne(() => UserEntity, (user:UserEntity) => user.todos)
+  @JoinColumn({ name: 'user_uuid' }) // Explicitly define snake_case foreign key column
   user: UserEntity;
 }

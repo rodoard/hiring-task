@@ -85,12 +85,13 @@ describe('Todo Controller', () => {
     it('should retrieve todos for the user', async () => {
       const todoRepository = AppDataSource.getRepository(TodoEntity);
       
-      // Create multiple todos with specific creation times
+      // Create multiple todos with specific due dates
       const todo1 = todoRepository.create({
         title: 'Todo 1',
         description: 'First todo',
         isCompleted: false,
         user,
+        dueDate: new Date('2024-01-01T00:00:00Z'),
         createdAt: new Date('2023-01-01T00:00:00Z')
       });
       await todoRepository.save(todo1);
@@ -100,6 +101,7 @@ describe('Todo Controller', () => {
         description: 'Second todo',
         isCompleted: true,
         user,
+        dueDate: new Date('2024-01-02T00:00:00Z'),
         createdAt: new Date('2023-01-02T00:00:00Z')
       });
       await todoRepository.save(todo2);
@@ -110,16 +112,16 @@ describe('Todo Controller', () => {
 
       expect(response.status).toBe(200);
       expect(response.body).toHaveLength(2);
-      // Most recently created todo should be first
+      // Todos are now sorted by dueDate, with the earliest due date first
       expect(response.body[0]).toMatchObject({
-        title: 'Todo 2',
-        description: 'Second todo',
-        isCompleted: true
-      });
-      expect(response.body[1]).toMatchObject({
         title: 'Todo 1',
         description: 'First todo',
         isCompleted: false
+      });
+      expect(response.body[1]).toMatchObject({
+        title: 'Todo 2',
+        description: 'Second todo',
+        isCompleted: true
       });
     });
 
@@ -260,13 +262,8 @@ describe('Todo Controller', () => {
         .delete(`/api/v1/todos/${savedTodo.uuid}`)
         .set('Authorization', bearerToken);
 
-      expect(response.status).toBe(200);
-      expect(response.body).toMatchObject({
-        uuid: savedTodo.uuid,
-        title: 'Todo to Delete',
-        description: 'Will be deleted',
-        isCompleted: false
-      });
+      expect(response.status).toBe(204);
+      expect(response.body).toEqual({});
 
       // Verify todo is actually deleted
       const deletedTodo = await todoRepository.findOne({ 
@@ -276,16 +273,16 @@ describe('Todo Controller', () => {
     });
 
     it('should handle error when deleting todo fails', async () => {
-      // Spy on TodoService to simulate an error
-      const todoServiceSpy = jest.spyOn(TodoService.prototype, 'deleteTodo')
-        .mockRejectedValue(new Error('Todo deletion failed'));
+      // Spy on TodoService to simulate a not found error
+      const todoServiceSpy = jest.spyOn(TodoService.prototype, 'getTodo')
+        .mockResolvedValue(null);
 
       const response = await request(app)
         .delete('/api/v1/todos/some-uuid')
         .set('Authorization', bearerToken);
 
-      expect(response.status).toBe(500);
-      expect(response.body.message).toBe('Todo deletion failed');
+      expect(response.status).toBe(404);
+      expect(response.body.message).toBe('Todo not found');
 
       todoServiceSpy.mockRestore();
     });

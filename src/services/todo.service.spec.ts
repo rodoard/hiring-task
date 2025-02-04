@@ -76,22 +76,21 @@ describe('TodoService', () => {
       expect(todos).toHaveLength(0);
     });
 
-    it('should retrieve todos sorted by creation date in descending order', async () => {
-      const todoRepository = dataSource.getRepository(TodoEntity);
-      
+    it('should retrieve todos sorted by due date in ascending order', async () => {
       const todoData1 = {
         title: 'Todo 1',
         description: 'First todo',
-        isCompleted: false
+        isCompleted: false,
+        dueDate: new Date('2023-01-01')
       };
 
       const todoData2 = {
         title: 'Todo 2',
         description: 'Second todo',
-        isCompleted: true
+        isCompleted: true,
+        dueDate: new Date('2023-02-01')
       };
 
-      // Create multiple todos with specific creation times
       const todo1 = todoRepository.create({
         ...todoData1,
         user,
@@ -109,9 +108,9 @@ describe('TodoService', () => {
       const todos = await todoService.getTodos();
 
       expect(todos).toHaveLength(2);
-      // Most recently created todo should be first
-      expect(todos[0]).toMatchObject(todoData2);
-      expect(todos[1]).toMatchObject(todoData1);
+      // Todos should be sorted by due date in ascending order
+      expect(todos[0]).toMatchObject(todoData1);
+      expect(todos[1]).toMatchObject(todoData2);
     });
   });
 
@@ -254,7 +253,7 @@ describe('TodoService', () => {
       });
 
       // Delete the todo
-      const deletedTodo = await todoService.deleteTodo({ uuid: todo.uuid });
+      const deletedTodo = await todoService.deleteTodo(todo.uuid);
 
       expect(deletedTodo).toMatchObject({
         uuid: todo.uuid,
@@ -269,12 +268,12 @@ describe('TodoService', () => {
     });
 
     it('should throw InvalidEntityError if UUID is not provided', async () => {
-      await expect(todoService.deleteTodo({})).rejects.toThrow(InvalidEntityError);
+      await expect(todoService.deleteTodo('')).rejects.toThrow(InvalidEntityError);
     });
 
     it('should throw NotFoundError if todo does not exist', async () => {
       await expect(
-        todoService.deleteTodo({ uuid: 'non-existent-uuid' })
+        todoService.deleteTodo('non-existent-uuid')
       ).rejects.toThrow(NotFoundError);
     });
 
@@ -298,7 +297,7 @@ describe('TodoService', () => {
 
       // Try to delete the todo using the other user's service
       await expect(
-        otherTodoService.deleteTodo({ uuid: addedTodo.uuid })
+        otherTodoService.deleteTodo(addedTodo.uuid)
       ).rejects.toThrow(NotFoundError);
     });
   });

@@ -34,8 +34,8 @@ export class TodoService {
 
   async getTodos() {
     const todos = await this.todoRepository.find({
-      where: { user: { uuid: this.userUuid } },
-      order: { createdAt: 'DESC' }
+      where: { user: { uuid: this.userUuid }  as UserEntity},
+      order: { dueDate: 'ASC' }
     });
 
     return todos;
@@ -67,9 +67,7 @@ export class TodoService {
     return await this.todoRepository.save(todo);
   }
 
-  async deleteTodo(todoData: { uuid?: string }) {
-    const { uuid } = todoData;
-
+  async deleteTodo(uuid: string) {
     if (!uuid) {
       throw new InvalidEntityError('Todo UUID is required for deletion');
     }

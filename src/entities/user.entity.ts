@@ -1,4 +1,4 @@
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn, Index } from "typeorm";
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn, Index, JoinColumn } from "typeorm";
 import { CoreEntity } from "./core.entity";
 import { TodoEntity } from "./todo.entity";
 

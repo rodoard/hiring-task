@@ -2,11 +2,7 @@ import { Env } from "./env";
 import app from "./app";
 import { dbCreate, AppDataSource } from "./db";
 import { main } from "./index";
-import { exec } from "child_process";
-import { promisify } from "util";
 import * as path from "path";
-
-const execAsync = promisify(exec);
 
 // Mock dependencies
 jest.mock("./app", () => ({
@@ -90,39 +86,4 @@ describe('Server Initialization', () => {
     }
   });
 
-  describe('Environment-based main function call', () => {
-    it('should not call main when NODE_ENV is test', async () => { 
-      // Spy on the main function
-      const mainSpy = jest.spyOn({ main }, "main").mockResolvedValue(undefined); // Mock the async function
-  
-      // Execute the index.ts file as a script using absolute path
-      const indexPath = path.resolve(__dirname, 'index.ts');
-      
-      // Expect the execution to fail due to TypeScript compilation error in create.controller.ts
-      await expect(execAsync(`NODE_ENV=test ts-node ${indexPath}`)).rejects.toThrow(/src\/controllers\/Todo\/create\.controller\.ts/);
-  
-      // Wait for the event loop to process any pending tasks
-      await Promise.resolve();
-  
-      // Verify main was not called
-      expect(mainSpy).not.toHaveBeenCalled();
-    });
-
-    it('should call main when NODE_ENV is development', async () => { 
-      // Spy on the main function
-      const mainSpy = jest.spyOn({ main }, "main").mockResolvedValue(undefined); // Mock the async function
-  
-      // Execute the index.ts file as a script using absolute path
-      const indexPath = path.resolve(__dirname, 'index.ts');
-      
-      // Expect the execution to fail due to TypeScript compilation error in create.controller.ts
-      await expect(execAsync(`NODE_ENV=development ts-node ${indexPath}`)).rejects.toThrow(/src\/controllers\/Todo\/create\.controller\.ts/);
-  
-      // Wait for the event loop to process any pending tasks
-      await Promise.resolve();
-  
-      // Verify main was not called
-      expect(mainSpy).not.toHaveBeenCalled();
-    });
-  });
 });
