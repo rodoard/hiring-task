@@ -1,6 +1,13 @@
 import '@testing-library/jest-dom';
 import { setupServer } from 'msw/node'
 
+// TypeScript global declaration for window.matchMedia
+declare global {
+  interface Window {
+    matchMedia: (query: string) => MediaQueryList;
+  }
+}
+
 // Mock localStorage
 const localStorageMock = {
   getItem: jest.fn(),
@@ -17,8 +24,8 @@ Object.defineProperty(window, 'matchMedia', {
     matches: false,
     media: query,
     onchange: null,
-    addListener: jest.fn(),
-    removeListener: jest.fn(),
+    addListener: jest.fn(), // deprecated
+    removeListener: jest.fn(), // deprecated
     addEventListener: jest.fn(),
     removeEventListener: jest.fn(),
     dispatchEvent: jest.fn(),
