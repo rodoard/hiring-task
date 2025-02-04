@@ -11,7 +11,7 @@ export const routeMiddleware = async (
   next: NextFunction
 ) => {
   if (req.path !== "/health") {
-    const data = validateIp(req.ip) ? await clientInspector(req) : "Invalid IP";
+  //  const data = validateIp(req.ip) ? await clientInspector(req) : "Invalid IP";
     Logger.group({
       title: "New Request",
       descriptions: [
@@ -30,11 +30,11 @@ export const routeMiddleware = async (
         {
           description: "BODY",
           info: JSON.stringify(req.body, null, 2),
-        },
+        },/** 
         {
           description: "CLIENTINFO",
           info: JSON.stringify(data, null, 2),
-        },
+        }, **/
       ],
     });
   }
